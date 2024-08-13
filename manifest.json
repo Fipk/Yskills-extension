@@ -1,0 +1,20 @@
+{
+  "name": "Yskills Manager",
+  "description": "An extension to interact with the Ytrack Yskills campus and register to various courses.",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "extension.html",
+    "default_icon": "ytrack.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "*://*.ytrack.learn.ynov.com/*"
+  ]
+}

@@ -1,0 +1,41 @@
+<html>
+  <body>
+
+    <div id="wrong-page" class="menu" style="display: none;">
+      <h1>This extension is meant to be used on Ytrack only.</h1>
+      <button id="go-to-yskills">Go to Yskills</button>
+    </div>
+
+    <div id="wrong-campus" class="menu" style="display: none;">
+      <h1>This extension is meant to be used on the Yskills campus only.</h1>
+      <button id="go-to-yskills">Go to Yskills</button>
+    </div>
+
+    <div id="token-retrieval-error" class="menu" style="display: none;">
+      <h1>There was an error retrieving your token.</h1>
+      <h2>You might not be logged in to the platform.</h2>
+    </div>
+
+    <div id="good-page" class="menu" style="display: none;">
+      <h1>Hello, world!</h1>
+      <button id="show-token">Show token</button>
+      <button id="copy-token">Copy token</button>
+      <div id="token" style="display: none;"></div>
+
+      <h2>Here are the courses you can enroll in:</h2>
+      <ul id="courses-list"></ul>
+    </div>
+
+    <div id="succefully-enrolled" class="menu" style="display: none;">
+      <h1>You have been successfully enrolled in the course.</h1>
+      <button id="go-back">Go back</button>
+    </div>
+
+    <div id="unexpected-error" class="menu" style="display: none;">
+      <h1>There was an unexpected error.</h1>
+      <h2>Please try again later.</h2>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
