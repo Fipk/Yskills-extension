@@ -24,12 +24,15 @@ async function extractUserId(jwtToken) {
   }
 }
 
-async function fetchCourses() {
-  const url = "http://localhost:8080/campus/courses";
+async function fetchAvailableCourses(jwtToken) {
+  const url = "http://localhost:8080/user/availableCourses";
 
   try {
     const response = await fetch(url, {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        'x-token': jwtToken
+      },
     });
 
     if (!response.ok) {
@@ -203,21 +206,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         showMenu('wrong-campus');
       } else {
         // add the courses to the ul with id "courses-list"
+        let ret = await getJwtToken();
         const coursesList = document.getElementById('courses-list');
-        const courses = await fetchCourses();
+        const courses = await fetchAvailableCourses(ret.jwtToken);
         if (courses.error) {
           showMenu('unexpected-error');
         } else {
-          for (const [key, value] of Object.entries(courses.data)) {
+          if (courses.data === null || courses.data === undefined || courses.data.length === 0) {
             const li = document.createElement('li');
-            const btn = document.createElement('button');
-            btn.textContent = 'Register';
-            btn.addEventListener('click', () => {
-              registerToCourse(value.id);
-            });
-            li.textContent = value.name;
-            li.appendChild(btn);
+            li.textContent = 'No courses available';
             coursesList.appendChild(li);
+          }else {
+            for (const [key, value] of Object.entries(courses.data)) {
+              const li = document.createElement('li');
+              const btn = document.createElement('button');
+              btn.textContent = 'Register';
+              btn.addEventListener('click', () => {
+                registerToCourse(value.id);
+              });
+              li.textContent = value.name;
+              li.appendChild(btn);
+              coursesList.appendChild(li);
+            }
           }
 
         }
