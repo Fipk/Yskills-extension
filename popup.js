@@ -46,6 +46,28 @@ async function fetchAvailableCourses(jwtToken) {
   }
 }
 
+async function fetchEnroledCourses(jwtToken) {
+  const url = "http://localhost:8080/user/courses";
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'x-token': jwtToken
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return { error: null, data: data };
+  } catch (error) {
+    return { error: error.message, data: null };
+  }
+}
+
 // endsection: API
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -192,6 +214,76 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
+  const showCourses = async () => {
+    try {
+      let ret = await getJwtToken();
+      if (ret.error) {
+        showMenu('token-retrieval-error');
+      } else {
+        const enroledCoursesList = document.getElementById('enrolled-courses-list');
+        console.log(enroledCoursesList);
+        enroledCoursesList.innerHTML = '';
+        // add a loading message
+        const li1 = document.createElement('li');
+        li1.textContent = 'Loading...';
+        enroledCoursesList.appendChild(li1);
+        const enroledCourses = await fetchEnroledCourses(ret.jwtToken);
+        enroledCoursesList.innerHTML = '';
+        if (enroledCourses.error) {
+          showMenu('unexpected-error');
+        } else {
+          if (enroledCourses.data === null || enroledCourses.data === undefined || enroledCourses.data.length === 0) {
+            const li1 = document.createElement('li');
+            li1.textContent = 'You are not enroled in any course';
+            enroledCoursesList.appendChild(li1);
+          } else {
+            for (const [key, value] of Object.entries(enroledCourses.data)) {
+              const li1 = document.createElement('li');
+              li1.textContent = value.name;
+              enroledCoursesList.appendChild(li1);
+            }
+          }
+        }
+  
+        const coursesList = document.getElementById('courses-list');
+        coursesList.innerHTML = '';
+        // add a loading message
+        const li = document.createElement('li');
+        li.textContent = 'Loading...';
+        coursesList.appendChild(li);
+        const courses = await fetchAvailableCourses(ret.jwtToken);
+        coursesList.innerHTML = '';
+        if (courses.error) {
+          showMenu('unexpected-error');
+        } else {
+          if (courses.data === null || courses.data === undefined || courses.data.length === 0) {
+            const li = document.createElement('li');
+            li.textContent = 'No courses available';
+            coursesList.appendChild(li);
+          } else {
+            for (const [key, value] of Object.entries(courses.data)) {
+              const li = document.createElement('li');
+              const btn = document.createElement('button');
+              btn.classList = "animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 neutralOnFill-01 baTransparent-01 bgNeutral-01 hoverBgNeutral-01 focusBgNeutral-01 ma2-01"
+              btn.textContent = 'Register';
+              btn.addEventListener('click', () => {
+                registerToCourse(value.id);
+                // refresh the courses list
+                showCourses();
+              });
+              li.textContent = value.name;
+              li.appendChild(btn);
+              coursesList.appendChild(li);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      showMenu('unexpected-error');
+    }
+  }
+
   // Check if the website is https://ytrack.learn.ynov.com/
   chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
     const activeTab = tabs[0];
@@ -212,27 +304,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (courses.error) {
           showMenu('unexpected-error');
         } else {
-          if (courses.data === null || courses.data === undefined || courses.data.length === 0) {
-            const li = document.createElement('li');
-            li.textContent = 'No courses available';
-            coursesList.appendChild(li);
-          }else {
-            for (const [key, value] of Object.entries(courses.data)) {
-              const li = document.createElement('li');
-              const btn = document.createElement('button');
-              btn.textContent = 'Register';
-              btn.addEventListener('click', () => {
-                registerToCourse(value.id);
-              });
-              li.textContent = value.name;
-              li.appendChild(btn);
-              coursesList.appendChild(li);
-            }
-          }
-
+          showCourses();
+          showMenu('good-page');
         }
-
-        showMenu('good-page');
       }
     }
   });

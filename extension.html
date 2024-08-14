@@ -1,39 +1,51 @@
 <html>
-  <body>
+  <head>
+    <title>Ytrack Extension</title>
+    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="base.css">
+  </head>
+  <body class="dark-theme">
+    <div id="root">
+      <div class="flex-01">
 
-    <div id="wrong-page" class="menu" style="display: none;">
-      <h1>This extension is meant to be used on Ytrack only.</h1>
-      <button id="go-to-yskills">Go to Yskills</button>
-    </div>
+        <div id="wrong-page" class="menu" style="display: none;">
+          <h1 class="hyphens-01 fMono-01 light-01 fs1-01 mb6-01 fs2_s-01 mb5_s-01 white-01">This extension is meant to be used on Ytrack only.</h1>
+          <button id="go-to-yskills" class="animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 white-01 baTransparent-01 bgPurple-01 hoverBgPurple-01 focusBgPurple-01 mb3-01">Go to Yskills</button>
+        </div>
 
-    <div id="wrong-campus" class="menu" style="display: none;">
-      <h1>This extension is meant to be used on the Yskills campus only.</h1>
-      <button id="go-to-yskills">Go to Yskills</button>
-    </div>
+        <div id="wrong-campus" class="menu" style="display: none;">
+          <h1 class="hyphens-01 fMono-01 light-01 fs1-01 mb6-01 fs2_s-01 mb5_s-01 white-01">This extension is meant to be used on the Yskills campus only.</h1>
+          <button id="go-to-yskills" class="animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 white-01 baTransparent-01 bgPurple-01 hoverBgPurple-01 focusBgPurple-01 mb3-01">Go to Yskills</button>
+        </div>
 
-    <div id="token-retrieval-error" class="menu" style="display: none;">
-      <h1>There was an error retrieving your token.</h1>
-      <h2>You might not be logged in to the platform.</h2>
-    </div>
+        <div id="token-retrieval-error" class="menu" style="display: none;">
+          <h1>There was an error retrieving your token.</h1>
+          <h2>You might not be logged in to the platform.</h2>
+        </div>
 
-    <div id="good-page" class="menu" style="display: none;">
-      <h1>Hello, world!</h1>
-      <button id="show-token">Show token</button>
-      <button id="copy-token">Copy token</button>
-      <div id="token" style="display: none;"></div>
+        <div id="good-page" class="menu" style="display: none;">
+          <h1 class="hyphens-01 fMono-01 light-01 fs1-01 mb6-01 fs2_s-01 mb5_s-01 teal-01">Welcome to Yskills !</h1>
+          <button id="show-token" class="animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 white-01 baTransparent-01 bgPurple-01 hoverBgPurple-01 focusBgPurple-01 mb3-01">Show token</button>
+          <button id="copy-token" class="animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 white-01 baTransparent-01 bgPurple-01 hoverBgPurple-01 focusBgPurple-01 mb3-01">Copy token</button>
+          <div id="token" style="display: none; overflow-wrap: anywhere;"></div>
 
-      <h2>Here are the courses you can enroll in:</h2>
-      <ul id="courses-list"></ul>
-    </div>
+          <h2>Here are the courses you are already enrolled in:</h2>
+          <ul id="enrolled-courses-list"></ul>
 
-    <div id="succefully-enrolled" class="menu" style="display: none;">
-      <h1>You have been successfully enrolled in the course.</h1>
-      <button id="go-back">Go back</button>
-    </div>
+          <h2>Here are the courses you can enroll in:</h2>
+          <ul id="courses-list"></ul>
+        </div>
 
-    <div id="unexpected-error" class="menu" style="display: none;">
-      <h1>There was an unexpected error.</h1>
-      <h2>Please try again later.</h2>
+        <div id="succefully-enrolled" class="menu" style="display: none;">
+          <h1>You have been successfully enrolled in the course.</h1>
+          <button id="go-back">Go back</button>
+        </div>
+
+        <div id="unexpected-error" class="menu" style="display: none;">
+          <h1>There was an unexpected error.</h1>
+          <h2>Please try again later.</h2>
+        </div>
+      </div>
     </div>
 
     <script src="popup.js"></script>

@@ -1,0 +1,221 @@
+body {
+    background-color: #1a191c;
+    width: 300px;
+    font-family: 'IBM Plex Sans', monospace;
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--neutral);
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  *:focus {
+    outline: none;
+  }
+  
+  button {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    user-select: none;
+  }
+  
+  a {
+    text-decoration: none;
+    color: var(--neutral);
+  }
+  
+  a:not(.graph-object):not(.bgPurple-01):focus * {
+    fill: var(--purple20);
+  }
+  
+  a:not(.graph-object):focus circle {
+    fill: none;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    margin-right: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(0, 0%, 30%);
+    border-radius: 10px;
+  }
+  
+  .markdown-body a {
+    text-decoration: none;
+    border-bottom: solid 1px var(--grey30);
+    padding-bottom: 2px;
+    color: var(--grey30);
+  }
+  
+  .markdown-body a:hover,
+  .markdown-body a:focus {
+    border-bottom: solid 1px var(--purple20);
+    color: var(--purple20);
+  }
+  
+  .hljs-comment,
+  .hljs-quote,
+  .hljs-meta {
+    color: #6272a4;
+  }
+  
+  .hljs-selector-tag,
+  .hljs-title,
+  .hljs-section,
+  .hljs-doctag,
+  .hljs-type,
+  .hljs-name,
+  .hljs-strong {
+    font-weight: bold;
+  }
+  
+  .hljs-emphasis {
+    font-style: italic;
+  }
+  
+  .hljs-deletion {
+    color: #8b080b;
+  }
+  
+  .hljs-keyword,
+  .hljs-selector-tag,
+  .hljs-literal,
+  .hljs-section,
+  .hljs-link {
+    color: var(--red45);
+  }
+  
+  .hljs-function .hljs-keyword {
+    color: #50fa7b;
+  }
+  
+  .hljs-symbol,
+  .hljs-bullet,
+  .hljs-addition,
+  .hljs-variable {
+    color: var(--teal65);
+  }
+  
+  .hljs,
+  .hljs-subst {
+    color: var(--grey10);
+  }
+  
+  .hljs-literal {
+    color: var(--purple20);
+  }
+  
+  .hljs-string,
+  .hljs-title,
+  .hljs-name,
+  .hljs-type,
+  .hljs-attribute,
+  .hljs-template-tag,
+  .hljs-template-variable {
+    color: var(--yellow55);
+  }
+  
+  .hljs .hll {
+    background-color: #f1fa8c;
+  }
+  
+  .markdown-body pre {
+    overflow-x: auto;
+    border-radius: 4px;
+  }
+  
+  .markdown-body > *:last-child {
+    margin-bottom: 0;
+  }
+  
+  .markdown-body pre code.hljs {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 400;
+    font-size: 0.9rem;
+    line-height: 1.25rem;
+  }
+  
+  .markdown-body h2 {
+    display: none;
+  }
+  
+  .markdown-body h3 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1.25rem;
+    color: var(--grey60);
+    font-weight: 300;
+    width: 100%;
+    border-bottom: solid 1px var(--grey60);
+    padding-bottom: var(--px2);
+    margin-bottom: var(--px6);
+    margin-top: var(--px10);
+  }
+  
+  .markdown-body p,
+  .markdown-body li {
+    line-height: 1.5;
+  }
+  
+  .markdown-body blockquote {
+    padding: 0 1em;
+    color: var(--orange25);
+    border-left: 0.25em solid var(--orange25);
+    margin-left: 0;
+  }
+  
+  .markdown-body img {
+    width: 100%;
+  }
+  
+  /* gitea syntax highlight, to be removed once we use raw markdown */
+  .chroma .lntd {
+    vertical-align: top;
+    padding: 0;
+    margin: 0;
+    border: 0;
+  }
+  
+  .chroma .lntable {
+    border-spacing: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    width: auto;
+    overflow: auto;
+    display: block;
+  }
+  
+  .chroma .hl {
+    display: block;
+    width: 100%;
+  }
+  
+  .chroma .lnt,
+  .chroma .ln {
+    margin-right: 0.4em;
+    padding: 0 0.4em;
+  }
+  
+  .chroma .gs {
+    font-weight: 600;
+  }
+  
+  .chroma .gl {
+    text-decoration: underline;
+  }
+  
+  @media all and (max-width: 1000px) {
+    #steps-map {
+      display: none;
+    }
+  }
