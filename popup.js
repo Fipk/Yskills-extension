@@ -127,6 +127,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
+  const showModal = (id, acceptFunction, cancelFunction, acceptText, cancelText) => {
+    hideAllMenus();
+    const modal = document.getElementById(id);
+    if (modal) {
+      modal.style.display = 'block';
+    }
+    const div = document.createElement('div');
+    const accept = () => {
+      div.remove();
+      modal.style.display = 'none';
+      acceptFunction();
+    }
+    const cancel = () => {
+      div.remove();
+      modal.style.display = 'none';
+      cancelFunction();
+    }
+    // create the buttons
+    div.classList = "flexRow-01 justifyCenter-01 mt11-01";
+    const acceptButton = document.createElement('button');
+    acceptButton.textContent = acceptText || 'Accept';
+    acceptButton.classList = "animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 white-01 baTransparent-01 bgRed-01 hoverBgRed-01 focusBgRed-01 mb2-01 mr5-01";
+    acceptButton.addEventListener('click', accept);
+    div.appendChild(acceptButton);
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = cancelText || 'Cancel';
+    cancelButton.classList = "animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 neutralOnFill-01 baTransparent-01 bgNeutral-01 hoverBgNeutral-01 focusBgNeutral-01";
+    cancelButton.addEventListener('click', cancel);
+    div.appendChild(cancelButton);
+    modal.appendChild(div);
+  }
+
   // Function to show the token
   const showToken = async () => {
     try {
@@ -174,7 +206,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   copyTokenButton.addEventListener('click', copyToken);
-  goBackButton.addEventListener('click', showMenu("good-page"));
+  goBackButton.addEventListener('click', () => {showMenu("good-page");});
 
   // Add event listeners to go to Yskills buttons
   goToYskillsButtons.forEach(button => {
@@ -189,7 +221,41 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (ret.error) {
         showMenu('token-retrieval-error');
       } else {
-        const url = "http://localhost:8080/campus/register";
+        const url = "http://localhost:8080/campus/courses/register";
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-token': ret.jwtToken
+          },
+          body: JSON.stringify({ courseId: courseId })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+        const data = await response.json();
+        console.log(data);
+        if (data.error) {
+          throw new Error(data.error);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      showMenu('unexpected-error');
+    }
+  };
+  const confirmUnregister = async (courseId) => {
+    showModal('confirm-unregister', () => {unregisterFromCourse(courseId); showMenu('good-page'); }, () => {showMenu('good-page');}, 'Unregister', 'Cancel');
+  }
+
+  const unregisterFromCourse = async (courseId) => {
+    try {
+      const ret = await getJwtToken();
+      if (ret.error) {
+        showMenu('token-retrieval-error');
+      } else {
+        const url = "http://localhost:8080/campus/courses/unregister";
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -214,70 +280,93 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
-  const showCourses = async () => {
-    try {
-      let ret = await getJwtToken();
-      if (ret.error) {
-        showMenu('token-retrieval-error');
-      } else {
-        const enroledCoursesList = document.getElementById('enrolled-courses-list');
-        console.log(enroledCoursesList);
-        enroledCoursesList.innerHTML = '';
-        // add a loading message
+  const addSpinnerWithText = (parentElement, text) => {
+    const container = document.createElement('div');
+    container.classList.add('flexColumn-01');
+    container.classList.add('alignCenter-01');
+    const spinner = document.createElement('div');
+    spinner.classList.add('spinnerBase-01');
+    spinner.classList.add('spinner-01');
+    const textElement = document.createElement('div');
+    textElement.classList.add('mt11-01');
+    textElement.textContent = text;
+    container.appendChild(spinner);
+    container.appendChild(textElement);
+    parentElement.appendChild(container);
+  }
+
+  const displayAvailableCourses = async (token) => {
+    ret = await token;
+    const enroledCoursesList = document.getElementById('enrolled-courses-list');
+    console.log(enroledCoursesList);
+    enroledCoursesList.innerHTML = '';
+    // loading spinner
+    addSpinnerWithText(enroledCoursesList, 'Loading...');
+    const enroledCourses = await fetchEnroledCourses(ret.jwtToken);
+    enroledCoursesList.innerHTML = '';
+    if (enroledCourses.error) {
+      showMenu('unexpected-error');
+    } else {
+      if (enroledCourses.data === null || enroledCourses.data === undefined || enroledCourses.data.length === 0) {
         const li1 = document.createElement('li');
-        li1.textContent = 'Loading...';
+        li1.textContent = 'You are not enroled in any course';
         enroledCoursesList.appendChild(li1);
-        const enroledCourses = await fetchEnroledCourses(ret.jwtToken);
-        enroledCoursesList.innerHTML = '';
-        if (enroledCourses.error) {
-          showMenu('unexpected-error');
-        } else {
-          if (enroledCourses.data === null || enroledCourses.data === undefined || enroledCourses.data.length === 0) {
-            const li1 = document.createElement('li');
-            li1.textContent = 'You are not enroled in any course';
-            enroledCoursesList.appendChild(li1);
-          } else {
-            for (const [key, value] of Object.entries(enroledCourses.data)) {
-              const li1 = document.createElement('li');
-              li1.textContent = value.name;
-              enroledCoursesList.appendChild(li1);
-            }
-          }
-        }
-  
-        const coursesList = document.getElementById('courses-list');
-        coursesList.innerHTML = '';
-        // add a loading message
-        const li = document.createElement('li');
-        li.textContent = 'Loading...';
-        coursesList.appendChild(li);
-        const courses = await fetchAvailableCourses(ret.jwtToken);
-        coursesList.innerHTML = '';
-        if (courses.error) {
-          showMenu('unexpected-error');
-        } else {
-          if (courses.data === null || courses.data === undefined || courses.data.length === 0) {
-            const li = document.createElement('li');
-            li.textContent = 'No courses available';
-            coursesList.appendChild(li);
-          } else {
-            for (const [key, value] of Object.entries(courses.data)) {
-              const li = document.createElement('li');
-              const btn = document.createElement('button');
-              btn.classList = "animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 neutralOnFill-01 baTransparent-01 bgNeutral-01 hoverBgNeutral-01 focusBgNeutral-01 ma2-01"
-              btn.textContent = 'Register';
-              btn.addEventListener('click', () => {
-                registerToCourse(value.id);
-                // refresh the courses list
-                showCourses();
-              });
-              li.textContent = value.name;
-              li.appendChild(btn);
-              coursesList.appendChild(li);
-            }
-          }
+      } else {
+        for (const [key, value] of Object.entries(enroledCourses.data)) {
+          const li1 = document.createElement('li');
+          const btn = document.createElement('button');
+          btn.classList = "animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 white-01 baTransparent-01 bgRed-01 hoverBgRed-01 focusBgRed-01 mb2-01 mr5-01"
+          btn.textContent = 'Unregister';
+          btn.addEventListener('click', () => {
+            confirmUnregister(value.id);
+            // refresh the courses list
+            showCourses();
+          });
+          li1.textContent = value.name;
+          li1.appendChild(btn);
+          enroledCoursesList.appendChild(li1);
         }
       }
+    }
+  };
+  const displayEnroledCourses = async (token) => {
+    ret = await token;
+    const coursesList = document.getElementById('courses-list');
+    coursesList.innerHTML = '';
+    // loading spinner
+    addSpinnerWithText(coursesList, 'Loading...');
+    const courses = await fetchAvailableCourses(ret.jwtToken);
+    coursesList.innerHTML = '';
+    if (courses.error) {
+      showMenu('unexpected-error');
+    } else {
+      if (courses.data === null || courses.data === undefined || courses.data.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'No courses available';
+        coursesList.appendChild(li);
+      } else {
+        for (const [key, value] of Object.entries(courses.data)) {
+          const li = document.createElement('li');
+          const btn = document.createElement('button');
+          btn.classList = "animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 neutralOnFill-01 baTransparent-01 bgNeutral-01 hoverBgNeutral-01 focusBgNeutral-01"
+          btn.textContent = 'Register';
+          btn.addEventListener('click', () => {
+            registerToCourse(value.id);
+            // refresh the courses list
+            showCourses();
+          });
+          li.textContent = value.name;
+          li.appendChild(btn);
+          coursesList.appendChild(li);
+        }
+      }
+    }
+  }
+
+  const showCourses = async () => {
+    try {
+        displayAvailableCourses(getJwtToken());
+        displayEnroledCourses(getJwtToken());
     } catch (err) {
       console.error(err);
       showMenu('unexpected-error');
@@ -297,17 +386,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!tabUrl.includes(campusPath)) {
         showMenu('wrong-campus');
       } else {
-        // add the courses to the ul with id "courses-list"
-        let ret = await getJwtToken();
-        const coursesList = document.getElementById('courses-list');
-        const courses = await fetchAvailableCourses(ret.jwtToken);
-        if (courses.error) {
-          showMenu('unexpected-error');
-        } else {
+          showMenu('loading-page');
+          await getJwtToken();
           showCourses();
           showMenu('good-page');
-        }
       }
     }
-  });
-});
+  }
+  );
+}
+);

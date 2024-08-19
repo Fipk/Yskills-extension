@@ -3,10 +3,22 @@
     <title>Ytrack Extension</title>
     <link rel="stylesheet" href="popup.css">
     <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="main.css">
   </head>
   <body class="dark-theme">
     <div id="root">
-      <div class="flex-01">
+      <div class="flexColumn-01 alignCenter-01 justifyCenter-01">
+
+        <div id="loading-page" class="menu">
+          <div class="flexColumn-01 alignCenter-01">
+            <div class="spinnerBase-01 spinner-01"></div>
+            <div class="mt11-01">Retrieving your token...</div>
+          </div>
+        </div>
+
+        <div id="confirm-unregister" class="menu" style="display: none;">
+          <h1 class="hyphens-01 fMono-01 light-01 fs1-01 mb6-01 fs2_s-01 mb5_s-01 white-01">Are you sure you want to unregister from this course ?</h1>
+        </div>
 
         <div id="wrong-page" class="menu" style="display: none;">
           <h1 class="hyphens-01 fMono-01 light-01 fs1-01 mb6-01 fs2_s-01 mb5_s-01 white-01">This extension is meant to be used on Ytrack only.</h1>
@@ -36,14 +48,10 @@
           <ul id="courses-list"></ul>
         </div>
 
-        <div id="succefully-enrolled" class="menu" style="display: none;">
-          <h1>You have been successfully enrolled in the course.</h1>
-          <button id="go-back">Go back</button>
-        </div>
-
         <div id="unexpected-error" class="menu" style="display: none;">
           <h1>There was an unexpected error.</h1>
           <h2>Please try again later.</h2>
+          <button id="go-back">Go back</button>
         </div>
       </div>
     </div>
