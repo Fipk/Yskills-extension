@@ -1,5 +1,43 @@
 // section: API
 
+function closePopup() {
+  window.close();
+}
+
+function searchList(inputElement, ulElement) {
+  inputElement.addEventListener('input', function() {
+      const filter = inputElement.value.toLowerCase();
+      const liElements = ulElement.getElementsByTagName('li');
+
+      Array.from(liElements).forEach(function(li) {
+          const text = li.textContent || li.innerText;
+          if (text.toLowerCase().indexOf(filter) > -1) {
+              li.style.display = "";
+          } else {
+              li.style.display = "none";
+          }
+      });
+  });
+}
+
+function search() {
+  var input, filter, ul, li, a, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  ul = document.getElementById("myUL");
+  li = ul.getElementsByTagName("li");
+  for (i = 0; i < li.length; i++) {
+      a = li[i].getElementsByTagName("a")[0];
+      txtValue = a.textContent || a.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1 || li[i].className.indexOf("alwaysshow") > -1) {
+          li[i].style.display = "";
+      } else {
+          li[i].style.display = "none";
+      }
+  }
+}
+
+
 async function extractUserId(jwtToken) {
   const url = "http://localhost:8080/user/extractId";
   try {
@@ -76,6 +114,57 @@ document.addEventListener('DOMContentLoaded', async () => {
   const copyTokenButton = document.getElementById('copy-token');
   const goBackButton = document.getElementById('go-back');
   const goToYskillsButtons = document.querySelectorAll('#go-to-yskills');
+  const goHomeNav = document.querySelectorAll('#go-home');
+  const goAdminNav = document.querySelectorAll('#go-admin');
+  const usernames = document.querySelectorAll('#username');
+  const registeredCoursesInput = document.getElementById('registered-course-input');
+  const availableCoursesInput = document.getElementById('available-course-input');
+  const enrolledCoursesList = document.getElementById('enrolled-courses-list');
+  const coursesList = document.getElementById('courses-list');
+  
+  searchList(registeredCoursesInput, enrolledCoursesList);
+  searchList(availableCoursesInput, coursesList);
+
+  function respondToVisibility(element, callback) {
+    var options = {
+      root: document.documentElement,
+    };
+  
+    var observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        callback(entry.intersectionRatio > 0);
+      });
+    }, options);
+  
+    observer.observe(element);
+  }
+
+  usernames.forEach(element => {
+    respondToVisibility(element, async () => {
+      const ret = await getJwtToken();
+      const name = await getUserName(ret.jwtToken);
+      if (name.error) {
+        showMenu('unexpected-error');
+      } else {
+        element.textContent = name.data.lastName + ' ' + name.data.firstName;
+      }
+    }
+    );
+  });
+
+  goHomeNav.forEach(button => {
+    button.addEventListener('click', () => {
+      showMenu('home');
+      showCourses();
+    });
+  }
+  );
+  goAdminNav.forEach(button => {
+    button.addEventListener('click', () => {
+      showMenu('admin');
+    });
+  }
+  );
 
   const getJwtToken = async () => {
     return new Promise(async (resolve, reject) => {
@@ -206,7 +295,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   copyTokenButton.addEventListener('click', copyToken);
-  goBackButton.addEventListener('click', () => {showMenu("good-page");});
+  goBackButton.addEventListener('click', () => {showMenu("home");});
 
   // Add event listeners to go to Yskills buttons
   goToYskillsButtons.forEach(button => {
@@ -214,6 +303,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       chrome.tabs.create({ url: "https://ytrack.learn.ynov.com/intra/yskills" });
     });
   });
+
 
   const registerToCourse = async (courseId) => {
     try {
@@ -246,7 +336,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
   const confirmUnregister = async (courseId) => {
-    showModal('confirm-unregister', () => {unregisterFromCourse(courseId); showMenu('good-page'); }, () => {showMenu('good-page');}, 'Unregister', 'Cancel');
+    showModal('confirm-unregister', () => {unregisterFromCourse(courseId); showMenu('home'); showCourses(); }, () => {showMenu('home'); showCourses();}, 'Unregister', 'Cancel');
   }
 
   const unregisterFromCourse = async (courseId) => {
@@ -280,6 +370,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
+  const getUserName = async (token) => {
+    try {
+      const url = "http://localhost:8080/user/name";
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'x-token': token
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      return { error: null, data: data };
+    } catch (error) {
+      return { error: error.message, data: null };
+    }
+  };
+
   const addSpinnerWithText = (parentElement, text) => {
     const container = document.createElement('div');
     container.classList.add('flexColumn-01');
@@ -298,7 +412,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const displayAvailableCourses = async (token) => {
     ret = await token;
     const enroledCoursesList = document.getElementById('enrolled-courses-list');
-    console.log(enroledCoursesList);
+    registeredCoursesInput.parentElement.style.display = 'none';
     enroledCoursesList.innerHTML = '';
     // loading spinner
     addSpinnerWithText(enroledCoursesList, 'Loading...');
@@ -319,19 +433,19 @@ document.addEventListener('DOMContentLoaded', async () => {
           btn.textContent = 'Unregister';
           btn.addEventListener('click', () => {
             confirmUnregister(value.id);
-            // refresh the courses list
-            showCourses();
           });
           li1.textContent = value.name;
           li1.appendChild(btn);
           enroledCoursesList.appendChild(li1);
         }
+        registeredCoursesInput.parentElement.style.display = '';
       }
     }
   };
   const displayEnroledCourses = async (token) => {
     ret = await token;
     const coursesList = document.getElementById('courses-list');
+    availableCoursesInput.parentElement.style.display = 'none';
     coursesList.innerHTML = '';
     // loading spinner
     addSpinnerWithText(coursesList, 'Loading...');
@@ -353,12 +467,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           btn.addEventListener('click', () => {
             registerToCourse(value.id);
             // refresh the courses list
+            showMenu('home');
             showCourses();
           });
           li.textContent = value.name;
           li.appendChild(btn);
           coursesList.appendChild(li);
         }
+        availableCoursesInput.parentElement.style.display = '';
       }
     }
   }
@@ -367,6 +483,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         displayAvailableCourses(getJwtToken());
         displayEnroledCourses(getJwtToken());
+        const close = document.getElementById('close');
+        close.addEventListener('click', () => {
+          closePopup();
+        });
     } catch (err) {
       console.error(err);
       showMenu('unexpected-error');
@@ -389,7 +509,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           showMenu('loading-page');
           await getJwtToken();
           showCourses();
-          showMenu('good-page');
+          showMenu('home');
       }
     }
   }

@@ -35,17 +35,117 @@
           <h2>You might not be logged in to the platform.</h2>
         </div>
 
-        <div id="good-page" class="menu" style="display: none;">
-          <h1 class="hyphens-01 fMono-01 light-01 fs1-01 mb6-01 fs2_s-01 mb5_s-01 teal-01">Welcome to Yskills !</h1>
-          <button id="show-token" class="animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 white-01 baTransparent-01 bgPurple-01 hoverBgPurple-01 focusBgPurple-01 mb3-01">Show token</button>
-          <button id="copy-token" class="animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 white-01 baTransparent-01 bgPurple-01 hoverBgPurple-01 focusBgPurple-01 mb3-01">Copy token</button>
-          <div id="token" style="display: none; overflow-wrap: anywhere;"></div>
+        <div id="home" class="menu" style="display: none;">
+          <div class="navbarGradient-01 noEvent-01 h12px-01 fixed-01 w100p-01 zi9-01 t0-01 l0-01"></div>
+          <nav id="navbar" class="fixed-01 w100p-01 zi10-01 alignCenter-01 h5-01 t0-01 l0-01">
+            <div class="ml4-01 mr4-01 alignCenter-01">
+              <svg class="w4-01 h4-01" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.a{fill:white;}</style></defs><polygon class="a" points="30.493 7.877 16.817 42.123 22.401 42.123 36.077 7.877 30.493 7.877"/><path class="a" d="M23.4043,18.64a5.1785,5.1785,0,0,0-.385-1.965l-3.512-8.798h-5.584l6.215,15.564a5.12,5.12,0,0,0,3.266-4.801"/></svg>
+            </div>
+            <ul class="ma0-01 pl0-01 ml6-01 alignCenter-01 justifyBetween-01 ellipsis-01">
+              <button id="go-home">
+                <li class="pointer-01 ellipsis-01 animate-01 hoverNeutral-01 fMono-01 fs5-01 uppercase-01 textMinimal-01">Home</li>
+              </button>
+              <div class="textMinimal-01 inlineFlex-01 mh5-01"></div>
+              <button id="go-admin">
+                <li class="pointer-01 ellipsis-01 animate-01 hoverNeutral-01 fMono-01 fs5-01 uppercase-01 textMinimal-01">Admin</li>
+              </button>
+            </ul>
+            <div class="mlAuto-01 mr6-01">
+              <div class="alignCenter-01">
+                  <div class="alignCenter-01 ml9-01 ml6_xs-01 pointer-01">
+                    <svg id="close" role="img" width="19px" viewBox="0 0 130 130" aria-label="icon">
+                      <path fill="none" stroke="var(--neutral)" stroke-width="7px" d="M85 21.81a51.5 51.5 0 1 1-39.4-.34M64.5 10v51.66"></path>
+                    </svg>
+                  </div>
+                  <div id="username" class="ml5-01 ml9_s-01 ml6_xs-01"></div>
+                  <div class="alignCenter-01 pointer-01 ml5-01 ml9_s-01 ml6_xs-01">
+                    <svg role="img" width="25px" viewBox="0 0 130 130" aria-label="icon">
+                      <g fill="var(--neutral)" stroke="none" stroke-width="0">
+                        <circle cx="30" cy="30" r="7"></circle>
+                        <circle cx="30" cy="65" r="7"></circle>
+                        <circle cx="30" cy="100" r="7"></circle>
+                        <circle cx="65" cy="65" r="7"></circle>
+                        <circle cx="65" cy="100" r="7"></circle>
+                        <circle cx="100" cy="65" r="7"></circle>
+                        <circle cx="100" cy="100" r="7"></circle>
+                        <circle cx="65" cy="30" r="7"></circle>
+                        <circle cx="100" cy="30" r="7"></circle>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+          </nav>
+          <div class="flexColumn-01 alignCenter-01 justifyCenter-01 mt9-01">
+            <h1 class="hyphens-01 fMono-01 light-01 fs1-01 mb6-01 fs2_s-01 mb5_s-01 teal-01">Welcome to Yskills !</h1>
+            <h2>Here are the courses you are already enrolled in:</h2>
+            <div>
+              <div class="whitePlaceholder-01 flex-01 bb-01 relative-01 minW15px-01 textNeutral-01 borderDetailMinimal-01 lh3-01 ol0-01 animate-01 hoverBgLevel4-01 hoverBorderDetailNeutral-01 alignCenter-01 w100p-01"><input id="registered-course-input" placeholder="Search bar placeholder" class="fs5-01 fSans-01 lh2-01 ls1-01 regular-01 textNeutral-01 ol0-01 ba0-01 w100p-01 ph3-01 pv2-01 light-01 bgNone-01 w100p-01"><div data-test="search-button" class="alignCenter-01 pr1-01"><svg role="img" width="13px" viewBox="0 0 130 130" aria-label="icon"><path fill="none" stroke="var(--neutral)" stroke-width="8px" d="M53.71 95A43.21 43.21 0 1 0 10.5 51.82 43.21 43.21 0 0 0 53.71
+                95zM80.71 82.59l38.79 38.79"></path></svg></div></div>
+              <ul id="enrolled-courses-list"></ul>
+            </div>
+            <h2>Here are the courses you can enroll in:</h2>
+            <div>
+              <div class="whitePlaceholder-01 flex-01 bb-01 relative-01 minW15px-01 textNeutral-01 borderDetailMinimal-01 lh3-01 ol0-01 animate-01 hoverBgLevel4-01 hoverBorderDetailNeutral-01 alignCenter-01 w100p-01"><input id="available-course-input" placeholder="Search bar placeholder" class="fs5-01 fSans-01 lh2-01 ls1-01 regular-01 textNeutral-01 ol0-01 ba0-01 w100p-01 ph3-01 pv2-01 light-01 bgNone-01 w100p-01"><div data-test="search-button" class="alignCenter-01 pr1-01"><svg role="img" width="13px" viewBox="0 0 130 130" aria-label="icon"><path fill="none" stroke="var(--neutral)" stroke-width="8px" d="M53.71 95A43.21 43.21 0 1 0 10.5 51.82 43.21 43.21 0 0 0 53.71
+                95zM80.71 82.59l38.79 38.79"></path></svg></div></div>
+              <ul id="courses-list"></ul>
+            </div>
 
-          <h2>Here are the courses you are already enrolled in:</h2>
-          <ul id="enrolled-courses-list"></ul>
+  
 
-          <h2>Here are the courses you can enroll in:</h2>
-          <ul id="courses-list"></ul>
+
+          </div>
+        </div>
+
+        <div id="admin" class="menu" style="display: none;">
+          <div class="navbarGradient-01 noEvent-01 h12px-01 fixed-01 w100p-01 zi9-01 t0-01 l0-01"></div>
+          <nav id="navbar" class="fixed-01 w100p-01 zi10-01 alignCenter-01 h5-01 t0-01 l0-01">
+            <div class="ml4-01 mr4-01 alignCenter-01">
+              <svg class="w4-01 h4-01" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.a{fill:white;}</style></defs><polygon class="a" points="30.493 7.877 16.817 42.123 22.401 42.123 36.077 7.877 30.493 7.877"/><path class="a" d="M23.4043,18.64a5.1785,5.1785,0,0,0-.385-1.965l-3.512-8.798h-5.584l6.215,15.564a5.12,5.12,0,0,0,3.266-4.801"/></svg>
+            </div>
+            <ul class="ma0-01 pl0-01 ml6-01 alignCenter-01 justifyBetween-01 ellipsis-01">
+              <button id="go-home">
+                <li class="pointer-01 ellipsis-01 animate-01 hoverNeutral-01 fMono-01 fs5-01 uppercase-01 textMinimal-01">Home</li>
+              </button>
+              <div class="textMinimal-01 inlineFlex-01 mh5-01"></div>
+              <button id="go-admin">
+                <li class="pointer-01 ellipsis-01 animate-01 hoverNeutral-01 fMono-01 fs5-01 uppercase-01 textMinimal-01">Admin</li>
+              </button>
+            </ul>
+            <div class="mlAuto-01 mr6-01">
+              <div class="alignCenter-01">
+                  <div class="alignCenter-01 ml9-01 ml6_xs-01 pointer-01">
+                    <svg id="close" role="img" width="19px" viewBox="0 0 130 130" aria-label="icon">
+                      <path fill="none" stroke="var(--neutral)" stroke-width="7px" d="M85 21.81a51.5 51.5 0 1 1-39.4-.34M64.5 10v51.66"></path>
+                    </svg>
+                  </div>
+                  <div id="username" class="ml5-01 ml9_s-01 ml6_xs-01"></div>
+                  <div class="alignCenter-01 pointer-01 ml5-01 ml9_s-01 ml6_xs-01">
+                    <svg role="img" width="25px" viewBox="0 0 130 130" aria-label="icon">
+                      <g fill="var(--neutral)" stroke="none" stroke-width="0">
+                        <circle cx="30" cy="30" r="7"></circle>
+                        <circle cx="30" cy="65" r="7"></circle>
+                        <circle cx="30" cy="100" r="7"></circle>
+                        <circle cx="65" cy="65" r="7"></circle>
+                        <circle cx="65" cy="100" r="7"></circle>
+                        <circle cx="100" cy="65" r="7"></circle>
+                        <circle cx="100" cy="100" r="7"></circle>
+                        <circle cx="65" cy="30" r="7"></circle>
+                        <circle cx="100" cy="30" r="7"></circle>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+          </nav>
+          <div class="flexColumn-01 alignCenter-01 justifyCenter-01 mt9-01"></div>
+            <h1 class="hyphens-01 fMono-01 light-01 fs1-01 mb6-01 fs2_s-01 mb5_s-01 teal-01">Administration Panel</h1>
+            <div class="flexColumn-01 alignCenter-01 justifyCenter-01">
+              <button id="show-token" class="animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 white-01 baTransparent-01 bgPurple-01 hoverBgPurple-01 focusBgPurple-01 mb3-01">Show token</button>
+              <button id="copy-token" class="animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 white-01 baTransparent-01 bgPurple-01 hoverBgPurple-01 focusBgPurple-01 mb3-01">Copy token</button>
+              <div id="token" style="display: none; overflow-wrap: anywhere;"></div>
+            </div>
+          </div>
         </div>
 
         <div id="unexpected-error" class="menu" style="display: none;">
