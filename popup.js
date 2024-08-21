@@ -1,5 +1,7 @@
 // section: API
 
+const RootURL = "https://yskills.alwaysdata.net";
+
 function closePopup() {
   window.close();
 }
@@ -39,7 +41,7 @@ function search() {
 
 
 async function extractUserId(jwtToken) {
-  const url = "http://localhost:8080/user/extractId";
+  const url = RootURL+"/user/extractId";
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -63,7 +65,7 @@ async function extractUserId(jwtToken) {
 }
 
 async function fetchAvailableCourses(jwtToken) {
-  const url = "http://localhost:8080/user/availableCourses";
+  const url = RootURL+"/user/availableCourses";
 
   try {
     const response = await fetch(url, {
@@ -85,7 +87,7 @@ async function fetchAvailableCourses(jwtToken) {
 }
 
 async function fetchEnroledCourses(jwtToken) {
-  const url = "http://localhost:8080/user/courses";
+  const url = RootURL+"/user/courses";
 
   try {
     const response = await fetch(url, {
@@ -311,7 +313,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (ret.error) {
         showMenu('token-retrieval-error');
       } else {
-        const url = "http://localhost:8080/campus/courses/register";
+        const url = RootURL+"/campus/courses/register";
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -345,7 +347,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (ret.error) {
         showMenu('token-retrieval-error');
       } else {
-        const url = "http://localhost:8080/campus/courses/unregister";
+        const url = RootURL+"/campus/courses/unregister";
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -372,7 +374,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const getUserName = async (token) => {
     try {
-      const url = "http://localhost:8080/user/name";
+      const url = RootURL+"/user/name";
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -423,19 +425,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
       if (enroledCourses.data === null || enroledCourses.data === undefined || enroledCourses.data.length === 0) {
         const li1 = document.createElement('li');
-        li1.textContent = 'You are not enroled in any course';
+        const div1 = document.createElement('div');
+        div1.classList = "ml4-01 purple-01";
+        div1.textContent = 'You are not enroled in any course';
+        li1.appendChild(div1);
         enroledCoursesList.appendChild(li1);
       } else {
         for (const [key, value] of Object.entries(enroledCourses.data)) {
           const li1 = document.createElement('li');
+          const div1 = document.createElement('div');
           const btn = document.createElement('button');
           btn.classList = "animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 white-01 baTransparent-01 bgRed-01 hoverBgRed-01 focusBgRed-01 mb2-01 mr5-01"
           btn.textContent = 'Unregister';
           btn.addEventListener('click', () => {
             confirmUnregister(value.id);
           });
-          li1.textContent = value.name;
-          li1.appendChild(btn);
+          div1.textContent = value.name;
+          div1.classList = "ml4-01 purple-01";
+          div1.appendChild(btn);
+          li1.appendChild(div1);
           enroledCoursesList.appendChild(li1);
         }
         registeredCoursesInput.parentElement.style.display = '';
@@ -456,11 +464,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
       if (courses.data === null || courses.data === undefined || courses.data.length === 0) {
         const li = document.createElement('li');
-        li.textContent = 'No courses available';
+        const div = document.createElement('div');
+        div.classList = "ml4-01 purple-01";
+        div.textContent = 'No courses available';
+        li.appendChild(div);
         coursesList.appendChild(li);
       } else {
         for (const [key, value] of Object.entries(courses.data)) {
           const li = document.createElement('li');
+          const div = document.createElement('div');
           const btn = document.createElement('button');
           btn.classList = "animate-01 inlineBlock-01 fMono-01 text-01 regular-01 fs9-01 ls1-01 uppercase-01 br1-01 pv2-01 ph3-01 neutralOnFill-01 baTransparent-01 bgNeutral-01 hoverBgNeutral-01 focusBgNeutral-01"
           btn.textContent = 'Register';
@@ -470,8 +482,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             showMenu('home');
             showCourses();
           });
-          li.textContent = value.name;
-          li.appendChild(btn);
+          div.textContent = value.name;
+          div.classList = "ml4-01 purple-01";
+          div.appendChild(btn);
+          li.appendChild(div);
           coursesList.appendChild(li);
         }
         availableCoursesInput.parentElement.style.display = '';
