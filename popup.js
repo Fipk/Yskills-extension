@@ -1,14 +1,13 @@
 // section: API
 
 const RootURL = "https://yskills.alwaysdata.net";
+//const RootURL = "http://localhost:8080";
 
 function closePopup() {
   window.close();
 }
 
-function isAdmin() {
-  return false;
-}
+
 
 function searchList(inputElement, ulElement) {
   inputElement.addEventListener('input', function() {
@@ -68,6 +67,32 @@ async function extractUserId(jwtToken) {
   }
 }
 
+async function isAdmin(jwtToken) {
+  const url = RootURL+"/user/roles";
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'x-token': jwtToken
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    if (data.error) {
+      throw new Error(data.error);
+    }
+    console.log(data);
+    return data.roles.includes('admin', 'campus_admin');
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
 async function fetchAvailableCourses(jwtToken) {
   const url = RootURL+"/user/availableCourses";
 
@@ -120,6 +145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const copyTokenButton = document.getElementById('copy-token');
   const goBackButton = document.getElementById('go-back');
   const goToYskillsButtons = document.querySelectorAll('#go-to-yskills');
+  const nav = document.getElementById('navbar');
   const goHomeNav = document.querySelectorAll('#go-home');
   const goAdminNav = document.querySelectorAll('#go-admin');
   const usernames = document.querySelectorAll('#username');
@@ -145,19 +171,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     observer.observe(element);
   }
 
+  respondToVisibility(nav, async (visible) => {
+    const ret = await getJwtToken();
+    if (ret.error) {
+      usernames[0].textContent = '';
+      return;
+    }
+    const name = await getUserName(ret.jwtToken);
+    if (name.error) {
+      showMenu('unexpected-error');
+      return;
+    } else {
+      usernames[0].textContent = name.data.lastName + ' ' + name.data.firstName;
+    }
+    const ret2 = await getJwtToken();
+    if (ret2.error) {
+      goAdminNav[0].style.display = 'none'
+      return;
+    }
+    let admin = await isAdmin(ret2.jwtToken);
+    console.log(admin);
+    if (admin) {
+      goAdminNav[0].style.display = '';
+    }else{
+      goAdminNav[0].style.display = 'none';
+    }
+  });
+
   usernames.forEach(element => {
     respondToVisibility(element, async () => {
-      const ret = await getJwtToken();
-      if (ret.error) {
-        element.textContent = '';
-        return;
-      }
-      const name = await getUserName(ret.jwtToken);
-      if (name.error) {
-        showMenu('unexpected-error');
-      } else {
-        element.textContent = name.data.lastName + ' ' + name.data.firstName;
-      }
     }
     );
   });
