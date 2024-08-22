@@ -6,6 +6,10 @@ function closePopup() {
   window.close();
 }
 
+function isAdmin() {
+  return false;
+}
+
 function searchList(inputElement, ulElement) {
   inputElement.addEventListener('input', function() {
       const filter = inputElement.value.toLowerCase();
@@ -144,6 +148,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   usernames.forEach(element => {
     respondToVisibility(element, async () => {
       const ret = await getJwtToken();
+      if (ret.error) {
+        element.textContent = '';
+        return;
+      }
       const name = await getUserName(ret.jwtToken);
       if (name.error) {
         showMenu('unexpected-error');
@@ -186,7 +194,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return [localStorage.getItem('hasura-jwt-token')];
             }
         } );
-        if (fromPageLocalStore[0].result === null || fromPageLocalStore[0].result === undefined) {
+        if (fromPageLocalStore[0].result === null || fromPageLocalStore[0].result === undefined || fromPageLocalStore[0].result[0] === null || fromPageLocalStore[0].result[0] === undefined) {
           throw "Token not found";
         }
         if (fromPageLocalStore[0].result === "") {
